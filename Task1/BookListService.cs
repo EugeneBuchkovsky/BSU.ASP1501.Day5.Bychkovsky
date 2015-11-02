@@ -17,74 +17,40 @@ namespace Task1
         /// <summary>
         /// Path to the file on the computer.
         /// </summary>
-        private readonly string path;
-
-        /// <summary>
-        /// Constuctor.
-        /// </summary>
-        /// <param name="fileName">File name (with extention)</param>
-        public BookListService(string fileName)
-        {
-            if (fileName == null || fileName.Equals(String.Empty))
-                throw new ArgumentNullException("File name not found!");
-            this.path = String.Format(AppDomain.CurrentDomain.BaseDirectory + fileName); 
-            bookList = new List<Book>();
-        }
+        //private readonly string path;
 
         public void AddBook(Book book)
         {
             if (book == null)
                 throw new ArgumentNullException();
-
-            ReadBooks();
-
             foreach (Book b in bookList)
             {
                 if (b.Equals(book))
-                    throw new ArgumentException("This is book already recorded!");
+                    throw new InvalidDataException("This is book already recorded!");
             }
             bookList.Add(book);
-            DeleteFile();
-            WriteBooks(bookList);
-            bookList.Clear();
         }
 
         public void RemoveBook(Book book)
         {
             if (book == null)
                 throw new ArgumentNullException();
-            bookList.Clear();
-            ReadBooks();
-            foreach (Book Rbook in bookList)
+            foreach (Book b in bookList)
             {
-                if (!Rbook.Equals(book))
-                    throw new ArgumentException("This book doesn't exist!");
+                if (!b.Equals(book))
+                    throw new InvalidDataException("This is book isn't founds!");
             }
             bookList.Remove(book);
-
-            DeleteFile();
-
-            WriteBooks(bookList);
         }
+
         public void SortBooksByTag()
         {
-            bookList.Clear();
-            ReadBooks();
-
             bookList.Sort(Comparer<Book>.Default);
-            DeleteFile();
-            WriteBooks(bookList);
         }
 
         public void SortBooksByTag(IComparer<Book> compare)
         {
-            ReadBooks();
-
             bookList.Sort(compare);
-
-            DeleteFile();
-            foreach (Book book in bookList)
-                AddBook(book);
         }
 
         public Book FindBookByTag(Func<Book, bool> func)
@@ -92,28 +58,18 @@ namespace Task1
             if (func == null)
                 throw new ArgumentNullException("Criterion is null!");
 
-            ReadBooks();
             Book book = bookList.First(func);
             return book;
         }
 
-        public override string ToString()
+        public void ReadFromFile(string FileName)
         {
+            if (FileName.Equals(string.Empty) || FileName == null)
+                throw new ArgumentNullException("File name not found!");
             bookList.Clear();
-            ReadBooks();
-            if (bookList.Count == 0)
-                return null;
-            StringBuilder result = new StringBuilder();
-            foreach (Book book in bookList)
-                result.Append(String.Format("Book: {0}\nAuthor:{1}\nAmount of pages: {2}\nGenre :{3}\n\n", book.Title, book.Author, book.PagesAmount, book.Genre));
-            return result.ToString();
-        }
-
-        private void ReadBooks()
-        {
             try
-            {
-                BinaryReader read = new BinaryReader(File.Open(path, FileMode.OpenOrCreate));
+            { 
+                BinaryReader read = new BinaryReader(File.Open(FileName, FileMode.OpenOrCreate));
                 while (read.PeekChar() > -1)
                 {
                     string author = read.ReadString();
@@ -130,13 +86,16 @@ namespace Task1
             }
         }
 
-        private void WriteBooks(List<Book> books)
+        public void WriteToFile(string FileName)
         {
-            //ReadBooks();
+            if (FileName.Equals(string.Empty) || FileName == null)
+                throw new ArgumentNullException("File name not found!");
+            string path = String.Format(AppDomain.CurrentDomain.BaseDirectory + FileName);
+            DeleteFile(path);
             try
             {
                 BinaryWriter write = new BinaryWriter(File.Open(path, FileMode.OpenOrCreate));
-                foreach(Book b in bookList)
+                foreach (Book b in bookList)
                 {
                     write.Write(b.Author);
                     write.Write(b.Title);
@@ -151,10 +110,21 @@ namespace Task1
             }
         }
 
-        private void DeleteFile()
+        public override string ToString()
+        {
+            if (bookList.Count == 0)
+                return null;
+            StringBuilder result = new StringBuilder();
+            foreach (Book book in bookList)
+                result.Append(String.Format("Book: {0}\nAuthor:{1}\nAmount of pages: {2}\nGenre :{3}\n\n", book.Title, book.Author, book.PagesAmount, book.Genre));
+            return result.ToString();
+        }
+
+        private void DeleteFile(string path)
         {
             FileInfo FI = new FileInfo(path);
-            FI.Delete();
-        } 
+            if (FI.Exists)
+                FI.Delete();
+        }
     }
 }
