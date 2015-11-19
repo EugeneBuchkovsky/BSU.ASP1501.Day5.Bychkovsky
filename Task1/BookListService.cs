@@ -15,7 +15,7 @@ namespace Task1
         /// Temporary storage of books
         /// </summary>
         //private List<Book> bookList;
-        public List<Book> bookList;
+        private List<Book> bookList;
 
         /// <summary>
         /// Path to the file on the computer.
@@ -27,6 +27,7 @@ namespace Task1
             bookList = new List<Book>();
         }
 
+        #region Add book
         public void AddBook(Book book)
         {
             if (book == null)
@@ -40,7 +41,9 @@ namespace Task1
             }
             bookList.Add(book);
         }
+        #endregion
 
+        #region Remove book
         public void RemoveBook(Book book)
         {
             if (book == null)
@@ -52,7 +55,9 @@ namespace Task1
             }
             bookList.Remove(book);
         }
+        #endregion
 
+        #region sort
         public void SortBooksByTag()
         {
             bookList.Sort(Comparer<Book>.Default);
@@ -62,7 +67,9 @@ namespace Task1
         {
             bookList.Sort(compare);
         }
+        #endregion
 
+        #region find book
         public Book FindBookByTag(Func<Book, bool> func)
         {
             if (func == null)
@@ -71,7 +78,11 @@ namespace Task1
             Book book = bookList.First(func);
             return book;
         }
+        #endregion
 
+
+        #region reed/write
+        #region file-xml
         public void ReadFromFile(string path, IRepository saver)
         {
             if (saver == null)
@@ -85,7 +96,21 @@ namespace Task1
                 saver = new FileStorage();
             saver.SaveTo(path, bookList);
         }
+        #endregion
 
+        #region serialize
+        public static void Serialize(string name, BookListService bookList)
+        {
+            Serializator.Serialize(name, bookList);
+        }
+
+        public static BookListService Deserialized(string path)
+        {
+            return Serializator.DeSerialize(path);
+        }
+        #endregion
+
+        #endregion
 
         //public void ReadFromFile(string FileName)
         //{

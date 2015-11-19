@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Task1
 {
+    [Serializable]
     public class Book : IEquatable<Book> , IComparable<Book>
     {
         private int pagesAmount;

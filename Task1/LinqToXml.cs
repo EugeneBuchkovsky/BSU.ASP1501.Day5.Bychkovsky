@@ -9,14 +9,14 @@ using System.Xml.Linq;
 
 namespace Task1
 {
-    class LinqToXml : IRepository
+    public class LinqToXml : IRepository
     {
         /// <summary>
         /// Add list of books to xml-file with Linq2xml
         /// </summary>
         /// <param name="name">Name of xml-file.</param>
         /// <param name="bookList"></param>
-        public void WriteTo(string name, List<Book> bookList)
+        public void SaveTo(string name, List<Book> bookList)
         {
             if (name.Equals(string.Empty) || name == null)
                 throw new ArgumentNullException("File name not found!");
@@ -48,7 +48,7 @@ namespace Task1
         /// </summary>
         /// <param name="path">Path to xml-file.</param>
         /// <returns></returns>
-        public List<Book> WtiteTo(string path)
+        public List<Book> ReadFrom(string path)
         {
             List<Book> bookList = new List<Book>();
 

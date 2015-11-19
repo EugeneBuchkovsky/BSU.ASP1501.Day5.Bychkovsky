@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace Task1
 {
-    class XMLStorage : IRepository
+    public class XMLStorage : IRepository
     {
         /// <summary>
         /// Add book list to xml file.

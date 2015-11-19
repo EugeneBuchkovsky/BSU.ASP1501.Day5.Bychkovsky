@@ -46,6 +46,7 @@
     <Compile Include="IRepository.cs" />
     <Compile Include="LinqToXml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializator.cs" />
     <Compile Include="XMLStorage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
